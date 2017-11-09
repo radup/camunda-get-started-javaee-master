@@ -1,0 +1,7 @@
+org/camunda/bpm/getstarted/pizza/uimediator/UIMediator.class
+org/camunda/bpm/getstarted/pizza/uimediator/UiMediatedBusinessProcessBean.class
+org/camunda/bpm/getstarted/pizza/ApproveOrderController.class
+org/camunda/bpm/getstarted/pizza/OrderBusinessLogic.class
+org/camunda/bpm/getstarted/pizza/uimediator/TaskCompletionEvent.class
+org/camunda/bpm/getstarted/pizza/OrderEntity.class
+org/camunda/bpm/getstarted/pizza/uimediator/TaskList.class

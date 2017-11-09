@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sid-ba17802b-d984-40a7-bd49-0edad21d2d5d" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="6.0.0" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  <message id="customer-registration-start_1" name="customer-registration-start"/>
+  <collaboration id="collaboration_2">
+    <participant id="Scoring_Service_1" name="Scoring Service"/>
+    <participant id="Process_Engine_Customer_Registration_20" name="Process Engine&#xA;Customer Registration" processRef="ui-mediator"/>
+  </collaboration>
+  <process id="ui-mediator" name="ui-mediator" isExecutable="true">
+    <laneSet id="laneSet_757">
+      <lane id="lane_395">
+        <flowNodeRef>startEvent_408</flowNodeRef>
+        <flowNodeRef>validate_customer_data_414</flowNodeRef>
+        <flowNodeRef>enter_additional_customer_data_429</flowNodeRef>
+        <flowNodeRef>call_scoring_service_444</flowNodeRef>
+        <flowNodeRef>could_score_be_calculated_immediately__459</flowNodeRef>
+        <flowNodeRef>send_confirmation_letter_470</flowNodeRef>
+        <flowNodeRef>wait_for_scoring_result</flowNodeRef>
+        <flowNodeRef>endEvent_501</flowNodeRef>
+        <flowNodeRef>send_escalation_email_571</flowNodeRef>
+        <flowNodeRef>endEvent_586</flowNodeRef>
+        <flowNodeRef>escalate_once_every_day_591</flowNodeRef>
+      </lane>
+    </laneSet>
+    <startEvent id="startEvent_408" activiti:formKey="app/startCustomerRegistration">
+      <outgoing>sequenceFlow_506</outgoing>
+      <messageEventDefinition id="messageEventDefinition_777" messageRef="customer-registration-start_1"/>
+    </startEvent>
+    <serviceTask id="validate_customer_data_414" activiti:expression="#{sysout}" name="validate customer data">
+      <incoming>sequenceFlow_506</incoming>
+      <outgoing>sequenceFlow_509</outgoing>
+    </serviceTask>
+    <userTask id="enter_additional_customer_data_429" activiti:assignee="kermit" activiti:formKey="app/enterAdditionalCustomerData1" name="enter additional customer data">
+      <incoming>sequenceFlow_509</incoming>
+      <outgoing>sequenceFlow_512</outgoing>
+    </userTask>
+    <serviceTask id="call_scoring_service_444" activiti:expression="#{scoreDelegate.execute()}" name="call scoring service">
+      <incoming>sequenceFlow_512</incoming>
+      <outgoing>sequenceFlow_515</outgoing>
+    </serviceTask>
+    <exclusiveGateway id="could_score_be_calculated_immediately__459" name="could score&#xA;be calculated&#xA;immediately?" gatewayDirection="Diverging">
+      <incoming>sequenceFlow_515</incoming>
+      <outgoing>sequenceFlow_521</outgoing>
+      <outgoing>yes_518</outgoing>
+    </exclusiveGateway>
+    <userTask id="send_confirmation_letter_470" activiti:assignee="kermit" activiti:formKey="app/printAndSendConfirmationLetter" name="send confirmation letter">
+      <incoming>sequenceFlow_524</incoming>
+      <incoming>yes_518</incoming>
+      <outgoing>sequenceFlow_527</outgoing>
+    </userTask>
+    <receiveTask id="wait_for_scoring_result" name="wait for scoring result">
+      <incoming>sequenceFlow_521</incoming>
+      <outgoing>sequenceFlow_524</outgoing>
+    </receiveTask>
+    <endEvent id="endEvent_501">
+      <incoming>sequenceFlow_527</incoming>
+    </endEvent>
+    <serviceTask id="send_escalation_email_571" activiti:expression="#{sysout}" name="send escalation&#xA;email">
+      <incoming>sequenceFlow_618</incoming>
+      <outgoing>sequenceFlow_621</outgoing>
+    </serviceTask>
+    <endEvent id="endEvent_586">
+      <incoming>sequenceFlow_621</incoming>
+    </endEvent>
+    <boundaryEvent id="escalate_once_every_day_591" name="escalate&#xA;once every day" attachedToRef="wait_for_scoring_result" cancelActivity="false">
+      <outgoing>sequenceFlow_618</outgoing>
+      <timerEventDefinition id="timerEventDefinition_891">
+        <timeCycle xsi:type="tFormalExpression" id="timeCycle_891">R3/P1D</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow id="sequenceFlow_527" isImmediate="true" sourceRef="send_confirmation_letter_470" targetRef="endEvent_501"/>
+    <sequenceFlow id="sequenceFlow_524" isImmediate="true" sourceRef="wait_for_scoring_result" targetRef="send_confirmation_letter_470"/>
+    <sequenceFlow id="sequenceFlow_521" name="no" isImmediate="true" sourceRef="could_score_be_calculated_immediately__459" targetRef="wait_for_scoring_result">
+      <conditionExpression xsi:type="tFormalExpression" id="conditionExpression_902">#{coreResultDelivereyAsynchronously}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sequenceFlow_621" isImmediate="true" sourceRef="send_escalation_email_571" targetRef="endEvent_586"/>
+    <sequenceFlow id="yes_518" name="yes" isImmediate="true" sourceRef="could_score_be_calculated_immediately__459" targetRef="send_confirmation_letter_470">
+      <conditionExpression xsi:type="tFormalExpression" id="conditionExpression_909">#{!coreResultDelivereyAsynchronously}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sequenceFlow_618" isImmediate="true" sourceRef="escalate_once_every_day_591" targetRef="send_escalation_email_571"/>
+    <sequenceFlow id="sequenceFlow_512" isImmediate="true" sourceRef="enter_additional_customer_data_429" targetRef="call_scoring_service_444"/>
+    <sequenceFlow id="sequenceFlow_515" isImmediate="true" sourceRef="call_scoring_service_444" targetRef="could_score_be_calculated_immediately__459"/>
+    <sequenceFlow id="sequenceFlow_509" isImmediate="true" sourceRef="validate_customer_data_414" targetRef="enter_additional_customer_data_429"/>
+    <sequenceFlow id="sequenceFlow_506" isImmediate="true" sourceRef="startEvent_408" targetRef="validate_customer_data_414"/>
+    <group id="group_931"/>
+    <textAnnotation id="textAnnotation_627">
+      <text>Note that the process instance is persisted in the database at this point even if the user don't continue his page-flow. Assume this was intended in this case for business reasons</text>
+    </textAnnotation>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_938">
+    <bpmndi:BPMNPlane id="BPMNPlane_938" bpmnElement="collaboration_2">
+      <bpmndi:BPMNShape id="Process_Engine_Customer_Registration_20_gui" bpmnElement="Process_Engine_Customer_Registration_20" isHorizontal="true">
+        <omgdc:Bounds height="222.0" width="1699.0" x="0.0" y="469.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_395_gui" bpmnElement="lane_395" isHorizontal="true">
+        <omgdc:Bounds height="222.0" width="1669.0" x="30.0" y="469.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="startEvent_408_gui" bpmnElement="startEvent_408" isHorizontal="true">
+        <omgdc:Bounds height="30.0" width="30.0" x="77.0" y="520.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="validate_customer_data_414_gui" bpmnElement="validate_customer_data_414" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="150.0" y="494.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="enter_additional_customer_data_429_gui" bpmnElement="enter_additional_customer_data_429" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="295.0" y="494.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="call_scoring_service_444_gui" bpmnElement="call_scoring_service_444" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="440.0" y="494.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="could_score_be_calculated_immediately__459_gui" bpmnElement="could_score_be_calculated_immediately__459" isHorizontal="true" isMarkerVisible="true">
+        <omgdc:Bounds height="40.0" width="40.0" x="585.0" y="514.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="send_confirmation_letter_470_gui" bpmnElement="send_confirmation_letter_470" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="1086.0" y="494.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="wait_for_scoring_result_486_gui" bpmnElement="wait_for_scoring_result" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="747.0" y="557.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent_501_gui" bpmnElement="endEvent_501" isHorizontal="true">
+        <omgdc:Bounds height="28.0" width="28.0" x="1635.5305" y="520.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="send_escalation_email_571_gui" bpmnElement="send_escalation_email_571" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="981.0" y="597.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent_586_gui" bpmnElement="endEvent_586" isHorizontal="true">
+        <omgdc:Bounds height="28.0" width="28.0" x="1126.9205" y="623.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="escalate_once_every_day_591_gui" bpmnElement="escalate_once_every_day_591" isHorizontal="true">
+        <omgdc:Bounds height="30.0" width="30.0" x="810.9724" y="623.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="group_931_gui" bpmnElement="group_931" isHorizontal="true">
+        <omgdc:Bounds height="121.0" width="281.0" x="545.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="textAnnotation_627_gui" bpmnElement="textAnnotation_627" isHorizontal="true">
+        <omgdc:Bounds height="84.0" width="212.0" x="244.0" y="590.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="sequenceFlow_527_gui" bpmnElement="sequenceFlow_527" sourceElement="send_confirmation_letter_470_gui" targetElement="endEvent_501_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1185.9205" y="534.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1634.9205" y="534.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_524_gui" bpmnElement="sequenceFlow_524" sourceElement="wait_for_scoring_result_486_gui" targetElement="send_confirmation_letter_470_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="846.92053" y="597.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="966.8072" y="597.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="966.8072" y="554.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1085.9205" y="554.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_521_gui" bpmnElement="sequenceFlow_521" sourceElement="could_score_be_calculated_immediately__459_gui" targetElement="wait_for_scoring_result_486_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="604.92053" y="554.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="605.0" y="597.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="746.92053" y="597.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="yes_518_gui" bpmnElement="yes_518" sourceElement="could_score_be_calculated_immediately__459_gui" targetElement="send_confirmation_letter_470_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="624.92053" y="534.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1085.9205" y="534.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_621_gui" bpmnElement="sequenceFlow_621" sourceElement="send_escalation_email_571_gui" targetElement="endEvent_586_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1080.9205" y="637.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="1125.9205" y="637.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_512_gui" bpmnElement="sequenceFlow_512" sourceElement="enter_additional_customer_data_429_gui" targetElement="call_scoring_service_444_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="394.92053" y="534.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="439.92053" y="534.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_618_gui" bpmnElement="sequenceFlow_618" sourceElement="escalate_once_every_day_591_gui" targetElement="send_escalation_email_571_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="840.92053" y="638.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="980.92053" y="637.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_515_gui" bpmnElement="sequenceFlow_515" sourceElement="call_scoring_service_444_gui" targetElement="could_score_be_calculated_immediately__459_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="539.92053" y="534.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="584.92053" y="534.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_509_gui" bpmnElement="sequenceFlow_509" sourceElement="validate_customer_data_414_gui" targetElement="enter_additional_customer_data_429_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="249.92053" y="534.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="294.92053" y="534.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_506_gui" bpmnElement="sequenceFlow_506" sourceElement="startEvent_408_gui" targetElement="validate_customer_data_414_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="106.92053" y="535.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="149.92053" y="534.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

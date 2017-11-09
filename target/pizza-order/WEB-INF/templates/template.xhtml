@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+	<title>camunda fox demo</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<h:outputStylesheet name="css/screen.css" />
+</h:head>
+
+<h:body>
+	<h:panelGroup id="page" layout="block">
+		<h:panelGroup id="header">			
+			<h1>camunda demo</h1>
+			<p><b>UI Mediator Pattern</b></p>								
+		</h:panelGroup>
+		<h:panelGroup>
+			<h:form>
+				<h:outputLink value="taskList.jsf">tasklist</h:outputLink> | 
+				<h:outputLink value="placeorder.jsf">start new pizza order</h:outputLink>  
+			</h:form>
+		</h:panelGroup>
+		<hr />
+		<h:panelGroup id="container" layout="block">		
+			<h:panelGroup>	
+				<h:panelGroup id="content" layout="block">
+					<h:messages globalOnly="true"/>
+					<ui:insert name="content">Main Content</ui:insert>
+				</h:panelGroup>
+			</h:panelGroup>
+			<h:panelGroup id="footer" layout="block">
+				<hr />
+				powered by <a href="http://www.camunda.com/">camunda</a>
+			</h:panelGroup>
+		</h:panelGroup>		
+	</h:panelGroup>
+
+</h:body>
+</html>
