@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID=":#{businessProcess.completeTask()}:#app#taskList.jsf"
+    NAME="output" PATH="/app/taskList.jsf"
+    TARGET="rules:#app#taskList.jsf"
+    TITLE="#{businessProcess.completeTask()}:[any]" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT
+    ID=":#{businessProcess.completeTask()}:#{uiMediator.nextTaskForm}.jsf"
+    NAME="output1" PATH="#{uiMediator.nextTaskForm}.jsf"
+    TARGET="rules:#{uiMediator.nextTaskForm}.jsf"
+    TITLE="#{businessProcess.completeTask()}:[any]" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#{uiMediator.nextTaskForm}.jsf"
+  PATH="/{uiMediator.nextTaskForm}.jsf" SHAPE="256,177,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#app#taskList.jsf" PATH="/app/taskList.jsf"
+  SHAPE="256,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:#app#placeorder.xhtml"
+  PATH="/app/placeorder.xhtml" SHAPE="32,161,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#app#placeorder.xhtml:0" NAME="item"
+   PATH="/app/placeorder.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="::#app#taskList.jsf" NAME="output"
+    PATH="/app/taskList.jsf" TARGET="rules:#app#taskList.jsf"
+    TITLE="[any]" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="::#{uiMediator.nextTaskForm}.jsf"
+    NAME="output1" PATH="#{uiMediator.nextTaskForm}.jsf"
+    TARGET="rules:#{uiMediator.nextTaskForm}.jsf" TITLE="[any]" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+</PROCESS>
