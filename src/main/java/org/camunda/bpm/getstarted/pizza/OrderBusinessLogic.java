@@ -47,20 +47,23 @@ public class OrderBusinessLogic {
 
   public void persistOrder(DelegateExecution delegateExecution) {
     // Create new order instance
-    OrderEntity orderEntity = new OrderEntity();
+    //OrderEntity orderEntity = new OrderEntity();
 
+	  
+	  
     // Get all process variables
     Map<String, Object> variables = delegateExecution.getVariables();
+    OrderEntity orderEntity = getOrder((Long) variables.get("orderId"));
 
     // Set order attributes
-    orderEntity.setCustomer((String) variables.get("customer"));
-    orderEntity.setAddress((String) variables.get("address"));
-    orderEntity.setPizza((String) variables.get("pizza"));
+    //orderEntity.setCustomer((String) variables.get("customer"));
+    //orderEntity.setAddress((String) variables.get("address"));
+    //orderEntity.setPizza((String) variables.get("pizza"));
 
     
     // Persist order instance and flush. After the flush the
     // id of the order instance is set.
-    entityManager.persist(orderEntity);
+    //entityManager.persist(orderEntity);
     entityManager.flush();
 
     String starter = (String) delegateExecution.getVariable("starter");

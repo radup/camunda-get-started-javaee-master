@@ -35,6 +35,7 @@ public class UiMediatedBusinessProcessBean extends BusinessProcess {
 	  public ProcessInstance startProcessByKey(String key, Map<String, Object> variables) {
 	    ProcessInstance processInstance = super.startProcessByKey(key, variables);
 	    uiMediator.checkProcessInstanceStatus(currentUser, processInstance.getProcessInstanceId());
+	    
 	    return processInstance;
 	  }  
 

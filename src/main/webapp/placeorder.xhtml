@@ -5,12 +5,7 @@
   xmlns:f="http://java.sun.com/jsf/core">
 
 <f:view>
-  <f:metadata>
-    <!-- Start a new process instance. Process Definition Key is read internally from
-         request parameters and cached in the CDI conversation scope.
-    -->
-    <f:event type="preRenderView" listener="#{camundaTaskForm.startProcessInstanceByKeyForm()}" />
-  </f:metadata>
+  
   <h:head>
     <title>Place Order</title>
   </h:head>
@@ -20,7 +15,7 @@
       <h:panelGrid columns="2">
         <p>
           <label for="pizza">Pizza</label>
-          <h:selectOneMenu id="pizza" value="#{processVariables['pizza']}">
+          <h:selectOneMenu id="pizza" value="#{newOrderEntity.pizza}">
               <f:selectItem itemValue="Margarita" itemLabel="Margarita"/>
               <f:selectItem itemValue="Salami" itemLabel="Salami"/>
               <f:selectItem itemValue="Tonno" itemLabel="Tonno"/>
@@ -30,12 +25,12 @@
       	<p>
      	    <label for="customer">Customer</label>
           <!-- create process variables using the processVariables map. -->
-          <h:inputText id="customer" value="#{processVariables['customer']}" required="true" />
+          <h:inputText id="customer" value="#{newOrderEntity.customer}" required="true" />
       	</p>
         <p>
           <label for="address">Address</label>
           <!-- create process variables using the processVariables map. -->
-          <h:inputText id="address" value="#{processVariables['address']}" required="true" />
+          <h:inputText id="address" value="#{newOrderEntity.address}" required="true" />
         </p>
       </h:panelGrid>
 
@@ -43,7 +38,7 @@
 
            NOTE: Syntax is different when working on user task forms, see file "approveLoanRequest.xhtml".
       -->
-      <h:commandButton id="submit_button" value="Order Pizza" action="#{camundaTaskForm.completeProcessInstanceForm()}" />
+      <h:commandButton id="submit_button" value="Order Pizza" action="#{orderService.startOrder()}" />
 
       <h:messages style="color:red;margin:8px;" />
     </h:form>
