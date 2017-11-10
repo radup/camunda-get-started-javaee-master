@@ -15,6 +15,9 @@
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="SequenceFlow_08ax6yk" sourceRef="ServiceTask_0lrmoed" targetRef="UserTask_0b3v36h" />
     <bpmn:userTask id="UserTask_0b3v36h" name="Approve Order" camunda:formKey="app:approveorder.jsf" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.bpm.getstarted.pizza.UserTaskExecutionListener" event="create" />
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_08ax6yk</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_14w7jxd</bpmn:outgoing>
     </bpmn:userTask>
@@ -35,6 +38,9 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" id="FormalExpression_2">${not orderBusinessLogic.getOrder(orderId).approved}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:userTask id="UserTask_19diw18" name="Prepare Pizza" camunda:formKey="app:preparepizza.jsf" camunda:assignee="demo">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="org.camunda.bpm.getstarted.pizza.UserTaskExecutionListener" event="create" />
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_10r7cva</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1mcsbs4</bpmn:outgoing>
       <bpmn:ioSpecification id="InputOutputSpecification_6">

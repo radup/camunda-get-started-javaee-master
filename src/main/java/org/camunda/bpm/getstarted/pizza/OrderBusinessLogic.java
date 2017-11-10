@@ -66,16 +66,17 @@ public class OrderBusinessLogic {
     //entityManager.persist(orderEntity);
     entityManager.flush();
 
-    String starter = (String) delegateExecution.getVariable("starter");
+    String assignee = (String) delegateExecution.getVariable(OrderStartListener.VARNAME_ASSIGNEE);
     
-    // Remove no longer needed process variables
+    // Remove no longer needed process variables - TODO: y?!
     delegateExecution.removeVariables(variables.keySet());
 
     // Add newly created order id as process variable
     delegateExecution.setVariable("orderId", orderEntity.getId());
-    delegateExecution.setVariable("starter", starter);
+    //keep assignee, i.e. starting customer
+    delegateExecution.setVariable(OrderStartListener.VARNAME_ASSIGNEE, assignee);
     
-    LOGGER.log(Level.INFO, "\n\n\nOrder {0} sent for approval to: {1}.\n\n\n", new String[]{String.valueOf(orderEntity.getId()), starter});
+    LOGGER.log(Level.INFO, "\n\n\nOrder {0} sent for approval to: {1}.\n\n\n", new String[]{String.valueOf(orderEntity.getId()), assignee});
     
   }
 

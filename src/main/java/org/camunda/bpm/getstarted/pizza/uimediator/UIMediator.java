@@ -15,6 +15,11 @@ import org.camunda.bpm.engine.task.Task;
 @Named("uiMediator")
 public class UIMediator implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Inject
 	private TaskService taskService;
 
@@ -36,7 +41,7 @@ public class UIMediator implements Serializable {
 					.list();
 			if (tasks.size() == 1) {
 				nextTaskId = tasks.get(0).getId();
-				nextTaskForm = formService.getTaskFormData(nextTaskId).getFormKey();
+				nextTaskForm = formService.getTaskFormData(nextTaskId).getFormKey().replaceAll("app:", "").replaceAll(".jsf", "");
 			}
 		}
 		// possible extension here: wait a couple of (milli)seconds to check if that
@@ -46,7 +51,7 @@ public class UIMediator implements Serializable {
 	    if (nextTaskForm!=null) {
 	      System.out.println("Mediator decided to route to task form " + nextTaskForm);      
 	    } else {
-	      System.out.println("Mediator decided to route back to task list, no user task coming in navigation flow.");      
+	      System.out.println("Mediator decided to route back to task list, no crt user assigned task coming in navigation flow.");      
 	    }
 	}
 
