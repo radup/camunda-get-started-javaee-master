@@ -3,9 +3,8 @@
  <PROCESS-ITEM NAME="rules:" SHAPE="32,17,0,0" model-entity="JSFProcessGroup">
   <PROCESS-ITEM ID="rules::0" NAME="item" model-entity="JSFProcessItem">
    <PROCESS-ITEM-OUTPUT
-    ID=":#{businessProcess.completeTask()}:#app#taskList.jsf"
-    NAME="output" PATH="/app/taskList.jsf"
-    TARGET="rules:#app#taskList.jsf"
+    ID=":#{businessProcess.completeTask()}:taskList.jsf" NAME="output"
+    PATH="taskList.jsf" TARGET="rules:taskList.jsf"
     TITLE="#{businessProcess.completeTask()}:[any]" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT
     ID=":#{businessProcess.completeTask()}:#{uiMediator.nextTaskForm}.jsf"
@@ -16,15 +15,36 @@
  </PROCESS-ITEM>
  <PROCESS-ITEM NAME="rules:#{uiMediator.nextTaskForm}.jsf"
   PATH="/{uiMediator.nextTaskForm}.jsf" SHAPE="256,177,0,0" model-entity="JSFProcessGroup"/>
- <PROCESS-ITEM NAME="rules:#app#taskList.jsf" PATH="/app/taskList.jsf"
-  SHAPE="256,33,0,0" model-entity="JSFProcessGroup"/>
- <PROCESS-ITEM NAME="rules:#app#placeorder.xhtml"
-  PATH="/app/placeorder.xhtml" SHAPE="32,161,0,0" model-entity="JSFProcessGroup">
-  <PROCESS-ITEM ID="rules:#app#placeorder.xhtml:0" NAME="item"
-   PATH="/app/placeorder.xhtml" model-entity="JSFProcessItem">
-   <PROCESS-ITEM-OUTPUT ID="::#app#taskList.jsf" NAME="output"
-    PATH="/app/taskList.jsf" TARGET="rules:#app#taskList.jsf"
-    TITLE="[any]" model-entity="JSFProcessItemOutput"/>
+ <PROCESS-ITEM NAME="rules:placeorder.xhtml" PATH="placeorder.xhtml"
+  SHAPE="32,161,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:placeorder.xhtml:0" NAME="item"
+   PATH="placeorder.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="::taskList.jsf" NAME="output"
+    PATH="taskList.jsf" TARGET="rules:taskList.jsf" TITLE="[any]" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="::#{uiMediator.nextTaskForm}.jsf"
+    NAME="output1" PATH="#{uiMediator.nextTaskForm}.jsf"
+    TARGET="rules:#{uiMediator.nextTaskForm}.jsf" TITLE="[any]" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:approveorder.xhtml" PATH="approveorder.xhtml"
+  SHAPE="32,305,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:approveorder.xhtml:0" NAME="item"
+   PATH="approveorder.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="::taskList.jsf" NAME="output"
+    PATH="taskList.jsf" TARGET="rules:taskList.jsf" TITLE="[any]" model-entity="JSFProcessItemOutput"/>
+   <PROCESS-ITEM-OUTPUT ID="::#{uiMediator.nextTaskForm}.jsf"
+    NAME="output1" PATH="#{uiMediator.nextTaskForm}.jsf"
+    TARGET="rules:#{uiMediator.nextTaskForm}.jsf" TITLE="[any]" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:taskList.jsf" PATH="taskList.jsf"
+  SHAPE="272,33,0,0" model-entity="JSFProcessGroup"/>
+ <PROCESS-ITEM NAME="rules:remakeorder.xhtml" PATH="remakeorder.xhtml"
+  SHAPE="32,449,0,0" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:remakeorder.xhtml:0" NAME="item"
+   PATH="remakeorder.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT ID="::taskList.jsf" NAME="output"
+    PATH="taskList.jsf" TARGET="rules:taskList.jsf" TITLE="[any]" model-entity="JSFProcessItemOutput"/>
    <PROCESS-ITEM-OUTPUT ID="::#{uiMediator.nextTaskForm}.jsf"
     NAME="output1" PATH="#{uiMediator.nextTaskForm}.jsf"
     TARGET="rules:#{uiMediator.nextTaskForm}.jsf" TITLE="[any]" model-entity="JSFProcessItemOutput"/>

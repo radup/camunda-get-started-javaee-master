@@ -28,7 +28,7 @@ public class PreparePizzaProcessRequestDelegate implements JavaDelegate {
 	  private final static Logger LOGGER = Logger.getLogger("PIZZA-ORDERS");
 
 	  public void execute(DelegateExecution execution) throws Exception {
-	    LOGGER.info("Preparing pizza for order: "+execution.getVariable("orderId")+"'...");
+	    LOGGER.info("\n\n\nPreparing pizza for order: "+execution.getVariable("orderId")+"'...\n\n\n");
 	  }
 
 }

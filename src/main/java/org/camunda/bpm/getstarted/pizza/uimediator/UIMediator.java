@@ -2,6 +2,7 @@ package org.camunda.bpm.getstarted.pizza.uimediator;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -14,6 +15,8 @@ import org.camunda.bpm.engine.task.Task;
 @RequestScoped
 @Named("uiMediator")
 public class UIMediator implements Serializable {
+
+	private final static Logger LOGGER = Logger.getLogger("PIZZA-ORDERS");
 
 	@Inject
 	private TaskService taskService;
@@ -36,18 +39,19 @@ public class UIMediator implements Serializable {
 					.list();
 			if (tasks.size() == 1) {
 				nextTaskId = tasks.get(0).getId();
-				nextTaskForm = formService.getTaskFormData(nextTaskId).getFormKey();
+				nextTaskForm = formService.getTaskFormData(nextTaskId).getFormKey().replaceAll("app:", "")
+						.replaceAll(".jsf", "");
 			}
 		}
 		// possible extension here: wait a couple of (milli)seconds to check if that
 		// task is reached asynchronously if you have this requirement
 		// Possible addition: wait for a defined time if something pops up.
-	    
-	    if (nextTaskForm!=null) {
-	      System.out.println("Mediator decided to route to task form " + nextTaskForm);      
-	    } else {
-	      System.out.println("Mediator decided to route back to task list, no user task coming in navigation flow.");      
-	    }
+
+		if (nextTaskForm != null) {
+			LOGGER.info("\n\n\nMediator decided to route to task form " + nextTaskForm+"\n\n\n");
+		} else {
+			LOGGER.info("\n\n\nMediator decided to route back to task list, no user task coming in navigation flow.\n\n\n");
+		}
 	}
 
 	public String getNextTaskId() {
