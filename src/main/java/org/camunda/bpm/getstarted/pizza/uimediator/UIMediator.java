@@ -16,6 +16,8 @@ import org.camunda.bpm.engine.task.Task;
 @Named("uiMediator")
 public class UIMediator implements Serializable {
 
+	private static final long serialVersionUID = -5296361038666702228L;
+
 	private final static Logger LOGGER = Logger.getLogger("PIZZA-ORDERS");
 
 	@Inject

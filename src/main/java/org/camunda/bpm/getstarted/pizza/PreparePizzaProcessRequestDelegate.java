@@ -13,22 +13,32 @@
 
 package org.camunda.bpm.getstarted.pizza;
 
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
+//has to be used with Delegate Expression in Camunda; using Java Class will not allow CDI!!!
+
 @Stateless
 @Named
 public class PreparePizzaProcessRequestDelegate implements JavaDelegate {
 
-	  private final static Logger LOGGER = Logger.getLogger("PIZZA-ORDERS");
+	private final static Logger LOGGER = Logger.getLogger("PIZZA-ORDERS");
 
-	  public void execute(DelegateExecution execution) throws Exception {
-	    LOGGER.info("\n\n\nPreparing pizza for order: "+execution.getVariable("orderId")+"'...\n\n\n");
-	  }
+	@Inject
+	private OrderBusinessLogic orderBusinessLogic;
+
+	public void execute(DelegateExecution execution) throws Exception {
+		OrderEntity orderEntity = orderBusinessLogic.getOrder((Long) execution.getVariable("orderId"));
+		LOGGER.log(Level.INFO, "\n\n\nPreparing pizza {0}, for order {1}, customer {2}, address {3} \n\n\n",
+				new String[] { orderEntity.getPizza(), String.valueOf(orderEntity.getId()), orderEntity.getCustomer(),
+						orderEntity.getAddress() });
+	}
 
 }

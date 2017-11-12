@@ -36,21 +36,18 @@ public class RemakeOrderController implements Serializable {
 	// Caches the OrderEntity during the request -jsf
 	private OrderEntity orderEntity;
 
-	private OrderEntity initialOrderEntity;
-
 	public OrderEntity getOrderEntity() {
 		if (orderEntity == null) {
 			// Load the order entity from the database if not already cached
 			orderEntity = orderBusinessLogic.getOrder((Long) businessProcess.getVariable("orderId"));
 		}
-		initialOrderEntity = orderEntity;
 		return orderEntity;
 	}
 
 	public void submitForm() throws IOException {
 		// Persist updated order entity and complete task form
-		LOGGER.log(Level.INFO, "\n\n\nOrder {0} for {1} pizza was changed to {2} pizza.\n\n\n",
-				new String[] { String.valueOf(orderEntity.getId()), initialOrderEntity.pizza, orderEntity.pizza });
+		LOGGER.log(Level.INFO, "\n\n\nOrder {0} was changed to {1} pizza.\n\n\n",
+				new String[] { String.valueOf(orderEntity.getId()), orderEntity.pizza });
 		orderBusinessLogic.mergeOrderAndCompleteTask(orderEntity);
 	}
 
