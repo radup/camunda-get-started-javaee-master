@@ -29,7 +29,10 @@ public class TaskList implements Serializable {
 	}
 
 	public List<Task> getList() {
-		return taskService.createTaskQuery().list();
+		
+//		taskService.get
+		
+		return taskService.createTaskQuery().taskAssignee("kermit").list();
 	}
 
 	public String getFormKey(Task task) {

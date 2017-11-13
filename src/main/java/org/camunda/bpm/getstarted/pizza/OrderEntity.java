@@ -35,6 +35,8 @@ public class OrderEntity implements Serializable {
   protected String address;
   protected String pizza;
   protected boolean approved;
+  
+  protected String assignee;
 
   public Long getId() {
     return id;
@@ -84,11 +86,14 @@ public class OrderEntity implements Serializable {
     this.approved = approved;
   }
 
-@Override
-public String toString() {
-	return "OrderEntity [id=" + id + ", pizza=" + pizza + ", customer=" + customer + ", address=" + address
-			+ ", approved=" + approved + "]";
+public String getAssignee() {
+	return assignee;
 }
+
+public void setAssignee(String assignee) {
+	this.assignee = assignee;
+}
+  
   
   
 }
