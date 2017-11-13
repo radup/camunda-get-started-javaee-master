@@ -74,6 +74,7 @@ public class OrderBusinessLogic {
 
 		// Add newly created order id as process variable
 		delegateExecution.setVariable("orderId", orderEntity.getId());
+		//keep assignee in
 		delegateExecution.setVariable(OrderService.VARNAME_ASSIGNEE, assignee);
 
 		LOGGER.log(Level.INFO, "\n\n\nOrder {0} for {1} pizza was sent for approval to user: {2}.\n\n\n",
@@ -94,7 +95,7 @@ public class OrderBusinessLogic {
 	public void mergeOrderAndCompleteTask(OrderEntity orderEntity) {
 		// Merge detached order entity with current persisted state
 		entityManager.merge(orderEntity);
-		entityManager.flush(); //TODO: needed?
+		//entityManager.flush(); //TODO: needed?
 		businessProcess.completeTask();
 	}
 
