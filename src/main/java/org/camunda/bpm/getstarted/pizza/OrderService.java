@@ -21,8 +21,8 @@ import org.camunda.bpm.getstarted.pizza.uimediator.TaskCompletionEvent;
 @ConversationScoped
 public class OrderService {
 
-	public static final String VARNAME_ASSIGNEE  = "customer";
 	
+	public static final String VARNAME_ASSIGNEE  = "assignee";
 	
 	public static final String VARNAME_ORDER_ID = "orderId";
 
@@ -62,7 +62,7 @@ public class OrderService {
 
 	public ProcessInstance startOrder() {
 		entityManager.persist(orderEntity);
-		//entityManager.flush(); - done in task Persist Order
+		//entityManager.flush(); - done in task Persist Order prolly not best idea
 
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put(VARNAME_ORDER_ID, orderEntity.getId());

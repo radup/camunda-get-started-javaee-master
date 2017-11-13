@@ -83,4 +83,12 @@ public class OrderEntity implements Serializable {
   public void setApproved(boolean approved) {
     this.approved = approved;
   }
+
+@Override
+public String toString() {
+	return "OrderEntity [id=" + id + ", pizza=" + pizza + ", customer=" + customer + ", address=" + address
+			+ ", approved=" + approved + "]";
+}
+  
+  
 }

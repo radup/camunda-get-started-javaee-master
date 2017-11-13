@@ -13,8 +13,10 @@
 
 package org.camunda.bpm.getstarted.pizza;
 
+import org.camunda.bpm.engine.ProcessEngineException;
 import org.camunda.bpm.engine.cdi.BusinessProcess;
 import org.camunda.bpm.engine.cdi.jsf.TaskForm;
+import org.camunda.bpm.engine.delegate.BpmnError;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.impl.context.Context;
 
@@ -25,6 +27,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -32,74 +35,101 @@ import java.util.logging.Logger;
 @Named
 public class OrderBusinessLogic {
 
-  // Inject the entity manager
-  @PersistenceContext
-  private EntityManager entityManager;
-  
-  @Inject
-  private BusinessProcess businessProcess;
+	// Inject the entity manager
+	@PersistenceContext
+	private EntityManager entityManager;
 
-  // Inject task form available through the camunda cdi artifact
-  @Inject
-  private TaskForm taskForm;
+	@Inject
+	private BusinessProcess businessProcess;
 
-  private static Logger LOGGER = Logger.getLogger(OrderBusinessLogic.class.getName());
+	// Inject task form available through the camunda cdi artifact
+	@Inject
+	private TaskForm taskForm;
 
-  public void persistOrder(DelegateExecution delegateExecution) {
-    // Create new order instance
-    //OrderEntity orderEntity = new OrderEntity();
+	private static Logger LOGGER = Logger.getLogger(OrderBusinessLogic.class.getName());
 
-	  
-	  
-    // Get all process variables
-    Map<String, Object> variables = delegateExecution.getVariables();
-    OrderEntity orderEntity = getOrder((Long) variables.get("orderId"));
+	public void persistOrder(DelegateExecution delegateExecution) {
+		// Create new order instance
+		// OrderEntity orderEntity = new OrderEntity();
 
-    // Set order attributes
-    //orderEntity.setCustomer((String) variables.get("customer"));
-    //orderEntity.setAddress((String) variables.get("address"));
-    //orderEntity.setPizza((String) variables.get("pizza"));
+		// Get all process variables
+		Map<String, Object> variables = delegateExecution.getVariables();
+		OrderEntity orderEntity = getOrder((Long) variables.get("orderId"));
 
-    
-    // Persist order instance and flush. After the flush the
-    // id of the order instance is set.
-    //entityManager.persist(orderEntity);
-    entityManager.flush();
+		// Set order attributes
+		// orderEntity.setCustomer((String) variables.get("customer"));
+		// orderEntity.setAddress((String) variables.get("address"));
+		// orderEntity.setPizza((String) variables.get("pizza"));
 
-    String assignee = (String) delegateExecution.getVariable(OrderStartListener.VARNAME_ASSIGNEE);
-    
-    // Remove no longer needed process variables - TODO: y?!
-    delegateExecution.removeVariables(variables.keySet());
+		// Persist order instance and flush. After the flush the
+		// id of the order instance is set.
+		// entityManager.persist(orderEntity);
 
-    // Add newly created order id as process variable
-    delegateExecution.setVariable("orderId", orderEntity.getId());
-    //keep assignee, i.e. starting customer
-    delegateExecution.setVariable(OrderStartListener.VARNAME_ASSIGNEE, assignee);
-    
-    LOGGER.log(Level.INFO, "\n\n\nOrder {0} sent for approval to: {1}.\n\n\n", new String[]{String.valueOf(orderEntity.getId()), assignee});
-    
-  }
+		entityManager.flush();
 
-  public OrderEntity getOrder(Long orderId) {
-    // Load order entity from database
-    return entityManager.find(OrderEntity.class, orderId);
-  }
+		String assignee = (String) delegateExecution.getVariable(OrderService.VARNAME_ASSIGNEE);
 
-  /*
-    Merge updated order entity and complete task form in one transaction. This ensures
-    that both changes will rollback if an error occurs during transaction.
-   */
-  public void mergeOrderAndCompleteTask(OrderEntity orderEntity) {
-    // Merge detached order entity with current persisted state
-    entityManager.merge(orderEntity);
-    // Complete user task from
-  //    taskForm.completeTask();
-      businessProcess.completeTask();
-  }
+		// Remove no longer needed process variables
+		delegateExecution.removeVariables(variables.keySet());
 
-  public void rejectOrder(DelegateExecution delegateExecution) {
-    OrderEntity order = getOrder((Long) delegateExecution.getVariable("orderId"));
-    LOGGER.log(Level.INFO, "\n\n\nSending Email:\nDear {0}, your order {1} of a {2} pizza has been rejected.\n\n\n", new String[]{order.getCustomer(), String.valueOf(order.getId()), order.getPizza()});
-  }
+		// Add newly created order id as process variable
+		delegateExecution.setVariable("orderId", orderEntity.getId());
+		delegateExecution.setVariable(OrderService.VARNAME_ASSIGNEE, assignee);
+
+		LOGGER.log(Level.INFO, "\n\n\nOrder {0} for {1} pizza was sent for approval to user: {2}.\n\n\n",
+				new String[] { String.valueOf(orderEntity.getId()), orderEntity.pizza, assignee });
+
+	}
+
+	public OrderEntity getOrder(Long orderId) {
+		// Load order entity from database
+		return entityManager.find(OrderEntity.class, orderId);
+	}
+
+	/*
+	 * Merge updated order entity and complete task form in one transaction. This
+	 * ensures that both changes will rollback if an error occurs during
+	 * transaction.
+	 */
+	public void mergeOrderAndCompleteTask(OrderEntity orderEntity) {
+		// Merge detached order entity with current persisted state
+		entityManager.merge(orderEntity);
+		entityManager.flush(); //TODO: needed?
+		businessProcess.completeTask();
+	}
+
+	public void rejectOrder(DelegateExecution delegateExecution) {
+		OrderEntity order = getOrder((Long) delegateExecution.getVariable("orderId"));
+		LOGGER.log(Level.INFO, "\n\n\nSending Email:\nDear {0}, your order {1} of a {2} pizza has been rejected.\n\n\n",
+				new String[] { order.getCustomer(), String.valueOf(order.getId()), order.getPizza() });
+	}
+
+
+	
+	public boolean ingredientsAvailable(DelegateExecution delegateExecution) throws ProcessEngineException {
+		int randomNum = ThreadLocalRandom.current().nextInt(1, 20);
+		if (randomNum % 2 == 0 ) {
+			return true;
+		}
+		return false;
+	}
+	
+	//TODO: how to work with Error Events?!!
+	
+	public void checkMainIngredient(DelegateExecution delegateExecution) throws ProcessEngineException {
+		int randomNum = ThreadLocalRandom.current().nextInt(1, 20);
+		if (randomNum % 5 == 0 ) {
+			//throw new BpmnError("INGREDIENT-UNAVAILABLE");
+			throw new IngredientNotAvailableException("main");
+		}
+	}
+
+	public void checkSpecialityIngredient(DelegateExecution delegateExecution) throws ProcessEngineException{
+		int randomNum = ThreadLocalRandom.current().nextInt(1, 20);
+		if (randomNum % 2 == 0 ) {
+			//throw new BpmnError("INGREDIENT-UNAVAILABLE");
+			throw new IngredientNotAvailableException("speciality");
+		}
+	}
 
 }
